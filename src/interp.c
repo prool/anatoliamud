@@ -522,7 +522,7 @@ void interpret( CHAR_DATA *ch, char *argument, bool is_order )
 	}
 #endif
 
-    if ( !isalpha(argument[0]) && !isdigit(argument[0]) )
+    if ( !isprool(argument[0]) )
     {
 	command[0] = argument[0];
 	command[1] = '\0';
