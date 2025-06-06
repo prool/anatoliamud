@@ -44,7 +44,7 @@
 #include "recycle.h"
 
 /* stuff for recyling notes */
-NOTE_DATA *note_free;
+extern NOTE_DATA *note_free; // prool fool
 
 NOTE_DATA *new_note()
 {
