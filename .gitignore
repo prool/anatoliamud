@@ -1,2 +1,4 @@
 # git ignore file
 *.o
+*.log
+config.status
