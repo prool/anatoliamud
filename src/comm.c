@@ -700,8 +700,10 @@ void init_descriptor( int control )
 	    ( addr >> 24 ) & 0xFF, ( addr >> 16 ) & 0xFF,
 	    ( addr >>  8 ) & 0xFF, ( addr       ) & 0xFF
 	    );
+#if 0 // prool
 	sprintf( log_buf, "Sock.sinaddr:  %s", buf );
 	log_string( log_buf );
+#endif
 	if ( ana_config.dns_enabled ) {
 	  from = gethostbyaddr( (char *) &sock.sin_addr,
 	    sizeof(sock.sin_addr), AF_INET );
@@ -878,7 +880,7 @@ bool read_from_descriptor( DESCRIPTOR_DATA *d )
 	}
 	else if ( nRead == 0 )
 	{
-	    log_string( "EOF encountered on read." );
+	    //log_string( "EOF encountered on read." ); // by prool
 #if defined(__hpux)
 	    break;
 #else
@@ -889,7 +891,7 @@ bool read_from_descriptor( DESCRIPTOR_DATA *d )
 	    break;
 	else
 	{
-	    perror( "Read_from_descriptor" );
+	    //perror( "Read_from_descriptor" ); // by prool
 	    return FALSE;
 	}
     }
