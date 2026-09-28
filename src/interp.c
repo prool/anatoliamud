@@ -45,6 +45,9 @@
 #include "interp.h"
 
 #undef IMMORTALS_LOGS
+#define IMMORTALS_LOGS // prool
+
+int isprool(char c);
 
 bool	check_social	args( ( CHAR_DATA *ch, char *command,char *argument ) );
 
@@ -503,7 +506,7 @@ void interpret( CHAR_DATA *ch, char *argument, bool is_order )
     strcpy( logline, argument );
 
 #ifdef IMMORTALS_LOGS
-    if (IS_IMMORTAL(ch)) 
+    if (1/*IS_IMMORTAL(ch)*/) // total log: for immortals and non-immortals. prool. 
 	{
 	if ( (imm_log = fopen(IMM_LOG_FILE,"a+")) == NULL )
 	   {
@@ -511,13 +514,13 @@ void interpret( CHAR_DATA *ch, char *argument, bool is_order )
 	   }
 	 else
 	 {
-	  strtime = (char *) malloc(100);
+	  //strtime = (char *) malloc(100); // prool
 	  strtime = ctime( &current_time);
 	  strtime[strlen(strtime) -1] = '\0';
 	  sprintf(buf,"%s :[%s]:%s\n", strtime,ch->name,logline);
 	  fprintf(imm_log,buf);
 	  fclose(imm_log);
-	  free(strtime);
+	  //free(strtime);
 	 }
 	}
 #endif

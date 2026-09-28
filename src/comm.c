@@ -158,7 +158,7 @@ void	exit_function( );
 int 	log_area_popularity(void);
 
 // prool begin
-// prool here: http://mud.kharkov.org proolix@gmail.com
+// prool here: https://virtustan.net proolix@gmail.com
 int isprool(char c) // prool's modif for isprint
 {
 if ((c<32)&&(c>=0)) return 0;
