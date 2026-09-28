@@ -1051,7 +1051,7 @@ bool quit_org( CHAR_DATA *ch, char *argument, bool Count , bool Remort)
 	send_to_char("Alas, all good things must come to an end.\n\r",ch);
 	act_color( "$C$n has left the game.$c", ch, NULL, NULL, 
 		TO_ROOM ,POS_DEAD,CLR_GREEN);
-	sprintf( log_buf, "%s has quit.", ch->name );
+	sprintf( log_buf, "%s has quit. %s", ch->name, ch->desc->host ); // tut byl prool
 	log_string( log_buf );
 	wiznet("$N rejoins the real world.",ch,NULL,WIZ_LOGINS,0,get_trust(ch));    }
 

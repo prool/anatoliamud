@@ -684,7 +684,7 @@ void init_descriptor( int control )
     size = sizeof(sock);
     if ( getpeername( desc, (struct sockaddr *) &sock, &size ) < 0 )
     {
-	perror( "New_descriptor: getpeername" );
+	//perror( "New_descriptor: getpeername" ); // by prool
 	dnew->host = str_dup( "(unknown)" );
     }
     else
@@ -793,7 +793,7 @@ void close_socket( DESCRIPTOR_DATA *dclose )
 
     if ( ( ch = dclose->character ) != NULL )
     {
-	sprintf( log_buf, "Closing link to %s.", ch->name );
+	sprintf( log_buf, "Closing link to %s. %s", ch->name, ch->desc->host );
 	log_string( log_buf );
 
 	if (ch->pet && 
@@ -1356,7 +1356,7 @@ bool write_to_descriptor( int desc, char *txt, int length )
     {
 	nBlock = UMIN( length - iStart, 4096 );
 	if ( ( nWrite = write( desc, txt + iStart, nBlock ) ) < 0 )
-	    { perror( "Write_to_descriptor" ); return FALSE; }
+	    { /*perror( "Write_to_descriptor" ); */ return FALSE; }
     } 
 
     return TRUE;
