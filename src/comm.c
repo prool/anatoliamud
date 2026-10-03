@@ -94,6 +94,16 @@ const	char	echo_off_str	[] = { IAC, WILL, TELOPT_ECHO, '\0' };
 const	char	echo_on_str	[] = { IAC, WONT, TELOPT_ECHO, '\0' };
 const	char 	go_ahead_str	[] = { IAC, GA, '\0' };
 
+#define MSSP			70
+#define MSSP_VAR		1
+#define MSSP_VAL		2
+
+unsigned char mssp_will[] = {(char) IAC, (char) WILL, (char) MSSP, '\0'};
+long	boot_time;
+
+void mssp_start(DESCRIPTOR_DATA * t);
+int prool_players ();
+
 /* command procedures needed */
 DECLARE_DO_FUN(do_help		);
 DECLARE_DO_FUN(do_look		);
@@ -419,6 +429,7 @@ void send_help_greeting( DESCRIPTOR_DATA *d )
     extern char * help_greeting;
 
     write_to_buffer( d, "\033[2J\033[0;0H\033[0;37;40m\n\r", 0 );
+    write_to_buffer(d, mssp_will, 0); // prool: MSSP WILL
     if ( help_greeting[0] == '.' )
       write_to_buffer( d, help_greeting+1, 0 );
     else
@@ -740,6 +751,7 @@ void init_descriptor( int control )
     /*
      * Send the greeting.
      */
+
     send_help_greeting( dnew );
 
     return;
@@ -850,6 +862,7 @@ void close_socket( DESCRIPTOR_DATA *dclose )
 bool read_from_descriptor( DESCRIPTOR_DATA *d )
 {
     int iStart;
+    unsigned char *p, *q;
 
     /* Hold horses if pending command already. */
     if ( d->incomm[0] != '\0' )
@@ -897,6 +910,65 @@ bool read_from_descriptor( DESCRIPTOR_DATA *d )
     }
 
     d->inbuf[iStart] = '\0';
+
+// prool: foolish MSSP code
+	for (p = d->inbuf/*+iOld*/; *p;) 
+	{
+		unsigned char *r;
+
+		if (*p != IAC
+		||  (d->connected == CON_PLAYING &&
+		     d->character )) 
+		{
+			p++;
+			continue;
+		}
+
+		switch (p[1])
+		{
+		case DO:
+			if(p[2] == MSSP) // prool: MSSP
+				{
+				printf("MSSP start!\n");
+				mssp_start(d->descriptor);
+				}
+		case WILL:
+		case DONT:
+		case WONT:
+
+			q = p+3;
+			break;
+
+		case SB:   
+			q = strchr(p, SE);
+			if (q == NULL) 
+			{
+				q = strchr(p, '\0');
+			}
+			else 
+			{
+				q++; 
+			}
+			break;
+
+		case IAC:
+			memmove(p, p+1, strlen(p));
+			p++;
+			continue;
+			/* NOTREACHED */
+		
+		default:
+			q = p+2;
+			break;
+		}
+		
+		if ((r = strchr(p, '\0')) < q)
+			q = r;
+		memmove(p, q, strlen(q)+1);
+	} 
+
+// prool: end of foolish MSSP code
+
     return TRUE;
 }
 
@@ -3558,4 +3630,92 @@ void parse_anatolia_config( int port, char *home_dir, char *conf_file )
   return;
 }
 
+// prool:
 
+void mssp_start(DESCRIPTOR_DATA * t)
+{
+char buf[1024];
+int i, size;
+struct sockaddr_in sock;
+
+i=sprintf(buf,
+"%c%c%c%cPLAYERS%c%i%cNAME%cAnatolia MUD%cUPTIME%c%li%cCRAWL_DELAY%c-1\
+%cHOSTNAME%cvirtustan.net\
+%cPORT%c3000\
+%cCODEBASE%cAnatolia\
+%cCONTACT%cproolix@gmail.com\
+%cCREATED%c2026\
+%cIP%c95.217.157.136\
+%cLANGUAGE%cEnglish\
+%cLOCATION%cEurope\
+%cMINIMUM AGE%c0\
+%cWEBSITE%chttps://virtustan.net\
+%cFAMILY%cDikuMUD\
+%cAREAS%c%i\
+%cMOBILES%c%i\
+%cOBJECTS%c%i\
+%cROOMS%c%i\
+%cCLASSES%c13\
+%cRACES%c16\
+%cANSI%c1\
+%cMCCP%c1\
+%cMCP%c0\
+%cMSP%c0\
+%cMXP%c0\
+%cGMCP%c1\
+%cHIRING BUILDERS%c1\
+%cPLAYER CLANS%c1\
+%cWORLD ORIGINALITY%c1\
+%cLEVELS%c91\
+%c%c",
+IAC,SB,MSSP,MSSP_VAR,MSSP_VAL,prool_players(),MSSP_VAR,MSSP_VAL,MSSP_VAR,MSSP_VAL,(long int)boot_time,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,120 /*statistic_zones*/,
+MSSP_VAR,MSSP_VAL,3312 /*statistic_mobs*/,
+MSSP_VAR,MSSP_VAL,4451 /*statistic_objs*/,
+MSSP_VAR,MSSP_VAL,8955 /*statistic_rooms*/,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+IAC,SE);
+
+printf("MUD: mssp_start()\n");
+
+write_to_descriptor(t, buf, 0/*strlen(buf)*/);
+}
+
+int prool_players ()
+{
+        DESCRIPTOR_DATA *d;
+
+        int count = 0;
+
+		for (d = descriptor_list; d; d = d->next)
+		{
+				if (d->connected != CON_PLAYING)
+						continue;
+				count++;
+
+		}
+return count;
+}
