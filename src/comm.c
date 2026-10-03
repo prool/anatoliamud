@@ -929,7 +929,7 @@ bool read_from_descriptor( DESCRIPTOR_DATA *d )
 		case DO:
 			if(p[2] == MSSP) // prool: MSSP
 				{
-				printf("MSSP start!\n");
+				printf("MSSP start %s\n", d->host);
 				mssp_start(d->descriptor);
 				}
 		case WILL:
@@ -3655,18 +3655,18 @@ i=sprintf(buf,
 %cMOBILES%c%i\
 %cOBJECTS%c%i\
 %cROOMS%c%i\
-%cCLASSES%c13\
-%cRACES%c16\
+%cCLASSES%c0\
+%cRACES%c0\
 %cANSI%c1\
-%cMCCP%c1\
+%cMCCP%c0\
 %cMCP%c0\
 %cMSP%c0\
 %cMXP%c0\
-%cGMCP%c1\
-%cHIRING BUILDERS%c1\
-%cPLAYER CLANS%c1\
-%cWORLD ORIGINALITY%c1\
-%cLEVELS%c91\
+%cGMCP%c0\
+%cHIRING BUILDERS%c0\
+%cPLAYER CLANS%c0\
+%cWORLD ORIGINALITY%c0\
+%cLEVELS%c0\
 %c%c",
 IAC,SB,MSSP,MSSP_VAR,MSSP_VAL,prool_players(),MSSP_VAR,MSSP_VAL,MSSP_VAR,MSSP_VAL,(long int)boot_time,
 MSSP_VAR,MSSP_VAL,
@@ -3681,10 +3681,10 @@ MSSP_VAR,MSSP_VAL,
 MSSP_VAR,MSSP_VAL,
 MSSP_VAR,MSSP_VAL,
 MSSP_VAR,MSSP_VAL,
-MSSP_VAR,MSSP_VAL,120 /*statistic_zones*/,
-MSSP_VAR,MSSP_VAL,3312 /*statistic_mobs*/,
-MSSP_VAR,MSSP_VAL,4451 /*statistic_objs*/,
-MSSP_VAR,MSSP_VAL,8955 /*statistic_rooms*/,
+MSSP_VAR,MSSP_VAL,0 /*statistic_zones*/,
+MSSP_VAR,MSSP_VAL,0 /*statistic_mobs*/,
+MSSP_VAR,MSSP_VAL,0 /*statistic_objs*/,
+MSSP_VAR,MSSP_VAL,0 /*statistic_rooms*/,
 MSSP_VAR,MSSP_VAL,
 MSSP_VAR,MSSP_VAL,
 MSSP_VAR,MSSP_VAL,
@@ -3699,7 +3699,7 @@ MSSP_VAR,MSSP_VAL,
 MSSP_VAR,MSSP_VAL,
 IAC,SE);
 
-printf("MUD: mssp_start()\n");
+//printf("MUD: mssp_start()\n");
 
 write_to_descriptor(t, buf, 0/*strlen(buf)*/);
 }

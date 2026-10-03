@@ -852,9 +852,10 @@ void fread_char( CHAR_DATA *ch, FILE *fp )
     int lastlogoff = current_time;
     long dev_null;
 
-
+#if 0 // by prool
     sprintf(buf,"Loading %s.",ch->name);
     log_string(buf);
+#endif
     ch->pcdata->bank_s = 0;
     ch->pcdata->bank_g = 0;
 
