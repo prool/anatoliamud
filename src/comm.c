@@ -94,6 +94,7 @@ const	char	echo_off_str	[] = { IAC, WILL, TELOPT_ECHO, '\0' };
 const	char	echo_on_str	[] = { IAC, WONT, TELOPT_ECHO, '\0' };
 const	char 	go_ahead_str	[] = { IAC, GA, '\0' };
 
+// prool code begin
 #define MSSP			70
 #define MSSP_VAR		1
 #define MSSP_VAL		2
@@ -103,6 +104,8 @@ long	boot_time;
 
 void mssp_start(DESCRIPTOR_DATA * t);
 int prool_players ();
+char *ptime(void);
+// prool code end
 
 /* command procedures needed */
 DECLARE_DO_FUN(do_help		);
@@ -297,12 +300,14 @@ int main( int argc, char **argv )
 
     if ( initmode == ANATOLIA_SINGLE_USER ) {
       control = 0;
-      sprintf(buf, "Anatolia has launched in single user mode." );
+      sprintf(buf, "Anatolia MUD has launched in single user mode." );
     }
     else {
       control = init_socket( ana_config.port_num );
-      sprintf(buf, "Anatolia has launched on port %d.", ana_config.port_num);
+      sprintf(buf, "Anatolia MUD has launched on port %d.", ana_config.port_num);
     }
+
+    printf("MUD source https://github.com/prool/anatoliamud\n");
 
     boot_db( );
     log_string( buf );
@@ -929,7 +934,7 @@ bool read_from_descriptor( DESCRIPTOR_DATA *d )
 		case DO:
 			if(p[2] == MSSP) // prool: MSSP
 				{
-				printf("MSSP start %s\n", d->host);
+				printf("%s :: Anatolia MUD: MSSP start %s\n", ptime(), d->host);
 				mssp_start(d->descriptor);
 				}
 		case WILL:
@@ -3719,3 +3724,17 @@ int prool_players ()
 		}
 return count;
 }
+
+char *ptime(void) // by prool. Возвращаемое значение: ссылка на текстовую строку с текущим временем
+	{
+	char *tmstr;
+	time_t mytime;
+
+	mytime = time(0);
+
+	tmstr = (char *) asctime(localtime(&mytime));
+	*(tmstr + strlen(tmstr) - 1) = '\0';
+
+	return tmstr;
+
+	}
